@@ -69,7 +69,7 @@ The library requires two dependencies. If they are not provided, default ones fo
 Usage
 -----
 
-You could create endpoints in you Controller to fetch the Upload and Download urls.
+You can create endpoints in you Controller to fetch the Upload and Download urls.
 
 eg:
      
