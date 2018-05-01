@@ -28,8 +28,6 @@ import static java.util.Collections.singletonList;
 
 @Configuration
 public class SpringGaeGcsConfiguration {
-    //TODO-AC: This should be a configurable property.
-    private static final String DEV_CREDENTIALS_FILE = "/dev-gcs-credentials.json";
     private static final List<String> STORAGE_SCOPES = singletonList("https://www.googleapis.com/auth/devstorage.full_control");
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringGaeGcsConfiguration.class);
 
@@ -48,7 +46,7 @@ public class SpringGaeGcsConfiguration {
         return new GsonFactory();
     }
 
-    @Profile("gae")
+    @Profile("${gcs.gaeProfileName:gae}")
     @Bean
     public GcsJsonApiClient getGaeGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory) {
 
@@ -58,11 +56,13 @@ public class SpringGaeGcsConfiguration {
                 getAppIdentityService(), googleCredential);
     }
 
-    @Profile("!gae")
+    @Profile("!${gcs.gaeProfileName:gae}")
     @Bean
-    public GcsJsonApiClient getLocalGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory) {
+    public GcsJsonApiClient getLocalGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory,
+                                              @Value("${gcs.devCredentialsFile:/dev-gcs-credentials.json}")
+                                                      String devCredentialsFile) {
 
-        GoogleCredential googleCredential = getLocalDevGoogleCredential(httpTransport, jsonFactory);
+        GoogleCredential googleCredential = getLocalDevGoogleCredential(httpTransport, jsonFactory, devCredentialsFile);
 
         return new LocalGcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport),
                 getAppIdentityService(), googleCredential);
@@ -72,14 +72,14 @@ public class SpringGaeGcsConfiguration {
     public CloudStorageService getCloudStorageService(GcsJsonApiClient cloudStorage,
                                                       @Value("${gcs.defaultBucket}") String gcsDefaultBucket,
                                                       @Value("${app.host}") String host,
-                                                      @Value("#{'${gcs.attachmentFolders:attachments}'.split(',')}")
-                                                              List<String> gcsAttachmentFolders) {
-        return new CloudStorageService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolders, "attachments");
+                                                      @Value("#{'${gcs.attachmentFolder:attachments}'}")
+                                                              String gcsAttachmentFolder) {
+        return new CloudStorageService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
     }
 
-    private GoogleCredential getLocalDevGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory) {
+    private GoogleCredential getLocalDevGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory, String devCredentialsFile) {
 
-        try (InputStream jsonCredentials = getClass().getResourceAsStream(DEV_CREDENTIALS_FILE)) {
+        try (InputStream jsonCredentials = getClass().getResourceAsStream(devCredentialsFile)) {
             return GoogleCredential
                     .fromStream(jsonCredentials, httpTransport, jsonFactory)
                     .createScoped(STORAGE_SCOPES);
@@ -87,7 +87,7 @@ public class SpringGaeGcsConfiguration {
             String msg = String.format("Cloud storage client configuration failed. Ensure you have a local credentials file created in src/main/resources/%s." +
                             "See https://developers.google.com/identity/protocols/application-default-credentials. Alternatively you can remove " +
                             "this %s from your ApplicationModule if you do not require Google Cloud Storage (e.g. file uploads).",
-                    DEV_CREDENTIALS_FILE, getClass().getSimpleName());
+                    devCredentialsFile, getClass().getSimpleName());
             throw new RuntimeException(msg, e);
         }
     }

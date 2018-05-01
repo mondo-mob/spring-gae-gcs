@@ -14,14 +14,12 @@ public class CloudStorageService {
     public static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 2;
 
     private final GcsJsonApiClient cloudStorage;
-    private final List<String> permittedAttachmentPaths;
     private final String gcsDefaultBucket;
     private final String host;
     private final String defaultAttachmentsFolder;
 
     public CloudStorageService(GcsJsonApiClient cloudStorage, String gcsDefaultBucket, String host,
-                               List<String> gcsAttachmentFolders, String defaultAttachmentsFolder) {
-        this.permittedAttachmentPaths = gcsAttachmentFolders;
+                               String defaultAttachmentsFolder) {
         this.cloudStorage = cloudStorage;
         this.gcsDefaultBucket = gcsDefaultBucket;
         this.host = host;
@@ -52,7 +50,6 @@ public class CloudStorageService {
         Validate.notBlank(folder, "folder required");
         Validate.notBlank(filename, "filename required");
         String originHost = Strings.isNullOrEmpty(origin) ? host : origin;
-        Validate.isTrue(permittedAttachmentPaths.contains(folder), "Folder not permitted for GCS attachments: %s", folder);
         String base = buildBasePath(folder);
         try {
             return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, URLEncoder.encode(filename, "UTF-8"), type, originHost);
