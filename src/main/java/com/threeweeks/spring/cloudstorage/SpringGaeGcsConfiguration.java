@@ -70,7 +70,7 @@ public class SpringGaeGcsConfiguration {
 
     @Bean
     public CloudStorageService getCloudStorageService(GcsJsonApiClient cloudStorage,
-                                                      @Value("${gcs.defaultbucket}") String gcsDefaultBucket,
+                                                      @Value("${gcs.defaultBucket}") String gcsDefaultBucket,
                                                       @Value("${app.host}") String host,
                                                       @Value("#{'${gcs.attachmentFolders:attachments}'.split(',')}")
                                                               List<String> gcsAttachmentFolders) {

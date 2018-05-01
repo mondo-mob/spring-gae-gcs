@@ -6,12 +6,14 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.appengine.api.appidentity.AppIdentityService;
-import com.google.appengine.repackaged.org.joda.time.DateTime;
 import org.apache.geronimo.mail.util.Base64;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 
 /**
  * Google Cloud Storage client that operates via the much fuller-featured JSON API. Requests occur
@@ -112,19 +114,20 @@ public class GcsJsonApiClient {
         String signature = signRequest(canonicalizedResource, expires);
         String googleAccessId = getGoogleAccessId();
 
-        String unEncodedQuery = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", googleAccessId, expires, signature);
-        String queryString;
-
-        try {
-            queryString = URLEncoder.encode(unEncodedQuery, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", googleAccessId, expires, encode(signature));
 
         return String.format("%s%s%s",
             BASE_GOOGLE_STORAGE_URL,
             canonicalizedResource,
             queryString);
+    }
+
+    protected String encode(String val) {
+        try {
+            return URLEncoder.encode(val, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected String getGoogleAccessId() {
@@ -133,7 +136,7 @@ public class GcsJsonApiClient {
 
     private long getExpiration(Integer minutesTillExpires) {
         minutesTillExpires = minutesTillExpires == null ? TEN_MINUTES : minutesTillExpires;
-        return DateTime.now().plusMinutes(minutesTillExpires).getMillis() / 1000;
+        return LocalDateTime.now().plusMinutes(minutesTillExpires).toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
     }
 
     private String signRequest(String canonicalizedResource, long expiration) {

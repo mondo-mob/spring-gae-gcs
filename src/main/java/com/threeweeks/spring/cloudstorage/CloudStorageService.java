@@ -54,7 +54,11 @@ public class CloudStorageService {
         String originHost = Strings.isNullOrEmpty(origin) ? host : origin;
         Validate.isTrue(permittedAttachmentPaths.contains(folder), "Folder not permitted for GCS attachments: %s", folder);
         String base = buildBasePath(folder);
-        return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, filename, type, originHost);
+        try {
+            return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, URLEncoder.encode(filename, "UTF-8"), type, originHost);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
