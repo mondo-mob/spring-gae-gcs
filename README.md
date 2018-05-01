@@ -17,7 +17,7 @@ This library is not published yet. To use it follow these steps:
 
 1. Clone this repo and navigate to it.
 2. Run `./gradlew install` 
-3. In your project, add this to your gradle dependencies: `compile 'com.threewks.spring:spring-gae-gcs:1.0-SNAPSHOT`
+3. In your project, add this to your gradle dependencies: `compile 'com.threewks.spring:spring-gae-gcs:1.0-SNAPSHOT'`
 
 
 Setup
