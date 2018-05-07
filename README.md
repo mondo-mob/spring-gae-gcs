@@ -84,16 +84,37 @@ public String generateUploadUrl(@RequestBody StorageUrlRequestDto fileUploadRequ
     return uploadUrl;
 }
 
-@RequestMapping(path = "/downloadUrl", method = POST)
-public DownloadFileResponseDto downloadFile(@RequestBody DownloadFileRequestDto dto) {
-    String download = gcsJsonApiService.getDownloadUrl(dto.getGcsName());
+@RequestMapping(path = "/downloadUrl/{gcsName}", method = POST)
+public DownloadFileResponseDto downloadFile(@PathParameter String gcsName) {
+    String download = gcsJsonApiService.getDownloadUrl(gcsName);
     return new DownloadFileResponseDto(download);
 }
 ```                
 
 In the previous example, the `gcsName` used to generate the downloadUrl, is obtained from the GCS response after uploading the file.
 
-Here is an example of the GCS response. **You should use the property `name` to generate the download url**.
+Things to consider when uploading from the browser
+---------------------------------------------------
+If you are uploading the file to GCS directly from the browser consider this:
+- In case you have a content security policy, add `https://www.googleapis.com/` to the allowed `connect-src` sources. e.g.
+  
+  ```html
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://www.googleapis.com/; script-src 'self'"> 
+  ```
+   
+- The request to the upload url should be a `PUT`. e.g.
+```javascript
+      return fetch(gcsUploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file,
+          mode: 'cors',
+      }).then({
+        //...
+      });
+```
+
+- Here is an example of the GCS upload response. **You should use the property `name` to generate the download url**.
 
 ```$json
 {  
