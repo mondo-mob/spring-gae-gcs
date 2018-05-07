@@ -1,7 +1,7 @@
 # spring-gae-gcs
 A library for integrating Google AppEngine and Spring Boot applications with the JSON Api of Google Cloud Storage to upload and retrieve files.
 
-**Please note that this library is in an early stage and we cannot guarantee non-breaking changes just yet between releases.**
+**ALPHA VERSION: Please note that this library is in active development and its not guaranteed to work correctly.**
 
 Overview
 --------
