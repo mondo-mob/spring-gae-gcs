@@ -69,12 +69,12 @@ public class SpringGaeGcsConfiguration {
     }
 
     @Bean
-    public CloudStorageService getCloudStorageService(GcsJsonApiClient cloudStorage,
-                                                      @Value("${gcs.defaultBucket}") String gcsDefaultBucket,
-                                                      @Value("${app.host}") String host,
-                                                      @Value("#{'${gcs.attachmentFolder:attachments}'}")
+    public GcsJsonApiService getCloudStorageService(GcsJsonApiClient cloudStorage,
+                                                    @Value("${gcs.defaultBucket}") String gcsDefaultBucket,
+                                                    @Value("${app.host}") String host,
+                                                    @Value("#{'${gcs.attachmentFolder:attachments}'}")
                                                               String gcsAttachmentFolder) {
-        return new CloudStorageService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
+        return new GcsJsonApiService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
     }
 
     private GoogleCredential getLocalDevGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory, String devCredentialsFile) {

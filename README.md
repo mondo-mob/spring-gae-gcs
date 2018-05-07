@@ -32,7 +32,8 @@ To use the library, import the configuration `@Import(SpringGaeGcsConfiguration.
     ...
 
 This will create the following bean that you can inject:
-- `CloudStorageService`: It will provide methods to generate the upload and download URL.
+- `GcsJsonApiService`: It will provide methods to generate the upload and download URL.
+- `GcsJsonApiClient`: Lower level client for interacting with the JSON api. You mostly will use the client.
 
 Configuration
 -------------
@@ -75,17 +76,17 @@ eg:
      
 ```$java                
 @Autowired
-CloudStorageService cloudStorageService; //<= Injected
+GcsJsonApiService gcsJsonApiService; //<= Injected
  
 @RequestMapping(path = "/uploadUrl", method = POST)
 public String generateUploadUrl(@RequestBody StorageUrlRequestDto fileUploadRequest) {
-    String uploadUrl = cloudStorageService.getUploadUrl(fileUploadRequest.getType(), fileUploadRequest.getName(), null);
+    String uploadUrl = gcsJsonApiService.getUploadUrl(fileUploadRequest.getType(), fileUploadRequest.getName(), null);
     return uploadUrl;
 }
 
 @RequestMapping(path = "/downloadUrl", method = POST)
 public DownloadFileResponseDto downloadFile(@RequestBody DownloadFileRequestDto dto) {
-    String download = cloudStorageService.getDownloadUrl(dto.getGcsName());
+    String download = gcsJsonApiService.getDownloadUrl(dto.getGcsName());
     return new DownloadFileResponseDto(download);
 }
 ```                

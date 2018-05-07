@@ -10,7 +10,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.UUID;
 
-public class CloudStorageService {
+public class GcsJsonApiService {
     public static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 2;
 
     private final GcsJsonApiClient cloudStorage;
@@ -18,8 +18,8 @@ public class CloudStorageService {
     private final String host;
     private final String defaultAttachmentsFolder;
 
-    public CloudStorageService(GcsJsonApiClient cloudStorage, String gcsDefaultBucket, String host,
-                               String defaultAttachmentsFolder) {
+    public GcsJsonApiService(GcsJsonApiClient cloudStorage, String gcsDefaultBucket, String host,
+                             String defaultAttachmentsFolder) {
         this.cloudStorage = cloudStorage;
         this.gcsDefaultBucket = gcsDefaultBucket;
         this.host = host;
