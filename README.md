@@ -13,11 +13,19 @@ Later you could request a signed download url for that file.
 
 Install
 -------
-This library is not published yet. To use it follow these steps:
+Maven: 
+```xml
+<dependency>
+  <groupId>com.threewks.spring</groupId>
+  <artifactId>spring-gae-gcs</artifactId>
+  <version>1.0.0-alpha-2</version>
+</dependency>
+```
 
-1. Clone this repo and navigate to it.
-2. Run `./gradlew install` 
-3. In your project, add this to your gradle dependencies: `compile 'com.threewks.spring:spring-gae-gcs:1.0-SNAPSHOT'`
+Gradle:
+```groovy
+compile 'com.threewks.spring:spring-gae-gcs:1.0.0-alpha-2'
+```
 
 
 Setup
