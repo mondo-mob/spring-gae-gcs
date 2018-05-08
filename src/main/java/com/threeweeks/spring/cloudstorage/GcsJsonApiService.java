@@ -88,4 +88,11 @@ public class GcsJsonApiService {
         return String.format("%s/%s", folder, UUID.randomUUID().toString());
     }
 
+    String getGcsDefaultBucket() {
+        return gcsDefaultBucket;
+    }
+
+    String getDefaultAttachmentsFolder() {
+        return defaultAttachmentsFolder;
+    }
 }

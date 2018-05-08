@@ -45,10 +45,8 @@ The following **mandatory** configuration options must be set in your applicatio
 
 The following **optional** configuration options can be set in your application.properties file:
 - `gcs.attachmentFolder` - The folder that will be used to upload the files. If not provided, `attachments` will be used.
-- `devCredentialsFile` - The name of the file with the service account credentials for local dev (See below).
+- `gcs.devCredentialsFile` - The name of the file with the service account credentials for local dev (See below).
 If not provided, `/dev-gcs-credentials.json` will be used.
-- `gcs.gaeProfileName` - The name of the [Spring Profile](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html) to indicate that the app is running in the Google cloud platform.
-By default `gae` will be used. `!gae` will be used to indicate local development.
 
 
 Local development
@@ -57,6 +55,10 @@ To be able to upload files from your local environment, you need to generate a J
 The key should be stored in the resources folder with the name: `dev-gcs-credentials.json`
 
 To obtain the JSON key follow this [guide](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+
+Spring profiles
+-----------------
+The library expects the `gae` profile to be active when the app is running in Google Cloud. `!gae` will be used to indicate local development. 
 
 Dependencies
 ------------
