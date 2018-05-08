@@ -1,13 +1,11 @@
 package com.threeweeks.spring.cloudstorage;
 
 import com.google.api.client.util.Strings;
+import com.google.common.net.UrlEscapers;
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.Validate;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
 import java.util.UUID;
 
 public class GcsJsonApiService {
@@ -51,11 +49,8 @@ public class GcsJsonApiService {
         Validate.notBlank(filename, "filename required");
         String originHost = Strings.isNullOrEmpty(origin) ? host : origin;
         String base = buildBasePath(folder);
-        try {
-            return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, URLEncoder.encode(filename, "UTF-8"), type, originHost);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, filename, type, originHost);
+
     }
 
     /**
@@ -68,12 +63,7 @@ public class GcsJsonApiService {
         String filename = FilenameUtils.getName(id);
         String path = FilenameUtils.getFullPath(id);
 
-        String escapedFullPath;
-        try {
-            escapedFullPath = FilenameUtils.concat(path, URLEncoder.encode(filename, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        String escapedFullPath = FilenameUtils.concat(path, UrlEscapers.urlFragmentEscaper().escape(filename));
         return cloudStorage.generateSignedUrl(gcsDefaultBucket, escapedFullPath, DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
     }
 
@@ -95,4 +85,5 @@ public class GcsJsonApiService {
     String getDefaultAttachmentsFolder() {
         return defaultAttachmentsFolder;
     }
+
 }

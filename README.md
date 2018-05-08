@@ -18,7 +18,7 @@ Maven:
 <dependency>
   <groupId>com.threewks.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
-  <version>1.0.0-alpha-2</version>
+  <version>1.0.0-alpha-3</version>
 </dependency>
 ```
 
@@ -74,7 +74,7 @@ Dependencies
 The library requires two dependencies. If they are not provided, default ones for AppEngine will be used:
 
 - `com.google.api.client.http.HttpTransport` If not provided, will use: `com.google.api.client.extensions.appengine.http.UrlFetchTransport`
-- `com.google.api.client.json.JsonFactory` If not provided, it will use: `com.google.api.client.json.gson.GsonFactory`
+- `com.google.api.client.json.JsonFactory` If not provided, it will use: `com.google.api.client.json.jackson2.JacksonFactory`
 
 
 Usage

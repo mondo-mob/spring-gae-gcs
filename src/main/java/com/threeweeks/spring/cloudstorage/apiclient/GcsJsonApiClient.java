@@ -7,10 +7,10 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import org.apache.geronimo.mail.util.Base64;
+import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -114,7 +114,7 @@ public class GcsJsonApiClient {
         String signature = signRequest(canonicalizedResource, expires);
         String googleAccessId = getGoogleAccessId();
 
-        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", googleAccessId, expires, encode(signature));
+        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", encode(googleAccessId), expires, encode(signature));
 
         return String.format("%s%s%s",
             BASE_GOOGLE_STORAGE_URL,
@@ -124,7 +124,7 @@ public class GcsJsonApiClient {
 
     protected String encode(String val) {
         try {
-            return URLEncoder.encode(val, "UTF-8");
+            return UriUtils.encodeQueryParam(val, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

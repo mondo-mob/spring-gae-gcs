@@ -7,7 +7,7 @@ import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
@@ -43,7 +43,7 @@ public class SpringGaeGcsConfiguration {
     @ConditionalOnMissingBean(JsonFactory.class)
     public JsonFactory getJsonFactory() {
         LOGGER.info("JSON factory bean not found, default new GsonFactory()");
-        return new GsonFactory();
+        return new JacksonFactory();
     }
 
     @Profile("gae")
