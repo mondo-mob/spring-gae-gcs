@@ -46,22 +46,22 @@ public class SpringGaeGcsConfiguration {
         return new GsonFactory();
     }
 
-    @Profile("${gcs.gaeProfileName:gae}")
+    @Profile("gae")
     @Bean
     public GcsJsonApiClient getGaeGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory) {
-
+        LOGGER.info("Starting gcs configuration in GAE env.");
         GoogleCredential googleCredential = getGaeGoogleCredential(httpTransport, jsonFactory);
 
         return new GcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport),
                 getAppIdentityService(), googleCredential);
     }
 
-    @Profile("!${gcs.gaeProfileName:gae}")
+    @Profile("!gae")
     @Bean
     public GcsJsonApiClient getLocalGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory,
                                               @Value("${gcs.devCredentialsFile:/dev-gcs-credentials.json}")
                                                       String devCredentialsFile) {
-
+        LOGGER.info("Starting gcs configuration in Local env.");
         GoogleCredential googleCredential = getLocalDevGoogleCredential(httpTransport, jsonFactory, devCredentialsFile);
 
         return new LocalGcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport),
