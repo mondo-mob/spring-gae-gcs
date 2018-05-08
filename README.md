@@ -41,7 +41,7 @@ To use the library, import the configuration `@Import(SpringGaeGcsConfiguration.
 
 This will create the following bean that you can inject:
 - `GcsJsonApiService`: It will provide methods to generate the upload and download URL.
-- `GcsJsonApiClient`: Lower level client for interacting with the JSON api. You mostly will use the client.
+- `GcsJsonApiClient`: Lower level client for interacting with the JSON api. You will mostly use the Service above.
 
 Configuration
 -------------
