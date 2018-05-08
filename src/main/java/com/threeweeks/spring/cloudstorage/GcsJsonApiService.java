@@ -56,15 +56,11 @@ public class GcsJsonApiService {
     /**
      * Get a signed url to view an attachment. The url will last 24 hours. The file name portion of the id is url escaped internally.
      *
-     * @param id The id of the attachment.
+     * @param gcsObjectName The id of the attachment.
      * @return Url
      */
-    public String getDownloadUrl(String id) {
-        String filename = FilenameUtils.getName(id);
-        String path = FilenameUtils.getFullPath(id);
-
-        String escapedFullPath = FilenameUtils.concat(path, UrlEscapers.urlFragmentEscaper().escape(filename));
-        return cloudStorage.generateSignedUrl(gcsDefaultBucket, escapedFullPath, DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
+    public String getDownloadUrl(String gcsObjectName) {
+        return cloudStorage.generateSignedUrl(gcsDefaultBucket, getFullPathFromObjectName(gcsObjectName), DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
     }
 
     /**
@@ -74,7 +70,7 @@ public class GcsJsonApiService {
      * @param folder
      * @return unique base path.
      */
-    protected String buildBasePath(String folder) {
+    String buildBasePath(String folder) {
         return String.format("%s/%s", folder, UUID.randomUUID().toString());
     }
 
@@ -84,6 +80,13 @@ public class GcsJsonApiService {
 
     String getDefaultAttachmentsFolder() {
         return defaultAttachmentsFolder;
+    }
+
+    static String getFullPathFromObjectName(String gcsObjectName) {
+        String filename = FilenameUtils.getName(gcsObjectName);
+        String path = FilenameUtils.getFullPath(gcsObjectName);
+
+        return FilenameUtils.concat(path, UrlEscapers.urlFragmentEscaper().escape(filename));
     }
 
 }

@@ -114,7 +114,7 @@ public class GcsJsonApiClient {
         String signature = signRequest(canonicalizedResource, expires);
         String googleAccessId = getGoogleAccessId();
 
-        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", encode(googleAccessId), expires, encode(signature));
+        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", encodeQueryParam(googleAccessId), expires, encodeQueryParam(signature));
 
         return String.format("%s%s%s",
             BASE_GOOGLE_STORAGE_URL,
@@ -122,7 +122,7 @@ public class GcsJsonApiClient {
             queryString);
     }
 
-    protected String encode(String val) {
+    protected String encodeQueryParam(String val) {
         try {
             return UriUtils.encodeQueryParam(val, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -134,7 +134,7 @@ public class GcsJsonApiClient {
         return appIdentityService.getServiceAccountName();
     }
 
-    private long getExpiration(Integer minutesTillExpires) {
+    long getExpiration(Integer minutesTillExpires) {
         minutesTillExpires = minutesTillExpires == null ? TEN_MINUTES : minutesTillExpires;
         return LocalDateTime.now().plusMinutes(minutesTillExpires).toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
     }
