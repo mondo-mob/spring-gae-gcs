@@ -103,6 +103,9 @@ public DownloadFileResponseDto downloadFile(@PathParameter String gcsName) {
 
 In the previous example, the `gcsName` used to generate the downloadUrl, is obtained from the GCS response after uploading the file.
 
+
+This gist has a utility function to upload the files from the browser: https://gist.github.com/afcastano/1826c65f0e75e571186666d1653d784a
+
 Things to consider when uploading from the browser
 ---------------------------------------------------
 If you are uploading the file to GCS directly from the browser consider this:
