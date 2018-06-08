@@ -86,7 +86,7 @@ public class GcsJsonApiService {
         String filename = FilenameUtils.getName(gcsObjectName);
         String path = FilenameUtils.getFullPath(gcsObjectName);
 
-        return FilenameUtils.concat(path, UrlEscapers.urlFragmentEscaper().escape(filename));
+        return FilenameUtils.concat(path, UrlEscapers.urlPathSegmentEscaper().escape(filename));
     }
 
 }

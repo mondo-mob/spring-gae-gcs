@@ -1,3 +1,7 @@
+1.0.0-alpha-5-SNAPSHOT
+----------------------
+- Fix download url for files containing url-special characters
+
 1.0.0-alpha-4-SNAPSHOT
 ----------------------
 - Updated guava to version 20
