@@ -18,7 +18,7 @@ Maven:
 <dependency>
   <groupId>com.threewks.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
-  <version>1.0.0-alpha-4</version>
+  <version>1.0.0-alpha-6</version>
 </dependency>
 ```
 
@@ -151,4 +151,29 @@ If you are uploading the file to GCS directly from the browser consider this:
    "crc32c":"lCnLNg==",
    "etag":"CLft6ajj49oCEAE="
 }
+```
+
+## Misc
+
+### Release to jCenter and Maven Central
+We firstly release to bintray's jecenter so that it's available immediately to those who use this (better) repository. We have also setup
+sync to maven central. Sync direct to maven central is a bit more cumbersome and there is a roughly 2-hourly job that syncs it up there.
+Jcenter also has CDN among other improvements listed here: [Why should I use jcenter over Maven Central?](https://jfrog.com/knowledge-base/why-should-i-use-jcenter-over-maven-central/) 
+
+Privileged users will have system properties for `bintray.user` and `bintray.key` defined to do this.
+
+```
+gradle bintrayUpload --info
+```
+The above command fails silently (as of version `1.8.0` of `gradle-bintray-plugin` so just make sure it didn't skip upload due to undefined key). 
+
+If you are setup with correct privileges then that's it. No manual steps - sync to maven central also triggered.
+
+**Note:** Be sure to update the README to reference the latest version in all places.
+
+### Installing the Library
+To install the library to your local maven repository, run the following:
+
+```
+./gradlew install
 ```

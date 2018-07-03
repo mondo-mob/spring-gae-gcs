@@ -6,11 +6,10 @@ import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.common.net.UrlEscapers;
 import org.apache.geronimo.mail.util.Base64;
-import org.springframework.web.util.UriUtils;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -33,8 +32,8 @@ public class GcsJsonApiClient {
     protected final GoogleCredential gcsCredential;
 
     public GcsJsonApiClient(HttpRequestFactory httpRequestFactory,
-                            AppIdentityService appIdentityService,
-                            GoogleCredential gcsCredential) {
+            AppIdentityService appIdentityService,
+            GoogleCredential gcsCredential) {
         this.httpRequestFactory = httpRequestFactory;
         this.appIdentityService = appIdentityService;
         this.gcsCredential = gcsCredential;
@@ -55,10 +54,10 @@ public class GcsJsonApiClient {
 
     public String initiateResumableUpload(String bucket, String folder, String filename, String contentType, String origin) {
         return initiateResumableUpload(
-            bucket,
-            String.format("%s/%s", folder, filename),
-            contentType,
-            origin);
+                bucket,
+                String.format("%s/%s", folder, filename),
+                contentType,
+                origin);
     }
 
     /**
@@ -88,9 +87,9 @@ public class GcsJsonApiClient {
         HttpResponse response;
         try {
             response = httpRequestFactory
-                .buildPostRequest(url, null)
-                .setHeaders(headers)
-                .execute();
+                    .buildPostRequest(url, null)
+                    .setHeaders(headers)
+                    .execute();
         } catch (IOException e) {
             throw new RuntimeException(String.format("Cannot initiate upload: %s", e.getMessage()), e);
         }
@@ -114,20 +113,12 @@ public class GcsJsonApiClient {
         String signature = signRequest(canonicalizedResource, expires);
         String googleAccessId = getGoogleAccessId();
 
-        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", encodeQueryParam(googleAccessId), expires, encodeQueryParam(signature));
+        String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", UrlEscapers.urlFormParameterEscaper().escape(googleAccessId), expires, UrlEscapers.urlFormParameterEscaper().escape(signature));
 
         return String.format("%s%s%s",
-            BASE_GOOGLE_STORAGE_URL,
-            canonicalizedResource,
-            queryString);
-    }
-
-    protected String encodeQueryParam(String val) {
-        try {
-            return UriUtils.encodeQueryParam(val, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+                BASE_GOOGLE_STORAGE_URL,
+                canonicalizedResource,
+                queryString);
     }
 
     protected String getGoogleAccessId() {
@@ -141,12 +132,12 @@ public class GcsJsonApiClient {
 
     private String signRequest(String canonicalizedResource, long expiration) {
         byte[] data = String.format(
-            "%s\n%s\n%s\n%s\n%s",
-            HTTP_METHOD,
-            "",  // Content MD5 is not required but could added for extra security
-            "",  // Content Type is optional and best left out as it isn't included by default in browser GET requests
-            expiration,
-            canonicalizedResource).getBytes();
+                "%s\n%s\n%s\n%s\n%s",
+                HTTP_METHOD,
+                "",  // Content MD5 is not required but could added for extra security
+                "",  // Content Type is optional and best left out as it isn't included by default in browser GET requests
+                expiration,
+                canonicalizedResource).getBytes();
 
         byte[] signature = sign(data);
         return new String(Base64.encode(signature));

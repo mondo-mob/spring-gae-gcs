@@ -1,3 +1,7 @@
+1.0.0-alpha-6-SNAPSHOT
+----------------------
+- Fix download url which was broken with Spring Boot 2 due to change with org.springframework.web.util.UriUtils
+
 1.0.0-alpha-5-SNAPSHOT
 ----------------------
 - Fix download url for files containing url-special characters
