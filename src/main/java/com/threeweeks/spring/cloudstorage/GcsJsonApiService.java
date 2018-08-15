@@ -9,7 +9,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.UUID;
 
 public class GcsJsonApiService {
-    public static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 2;
+    public static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 5;
 
     private final GcsJsonApiClient cloudStorage;
     private final String gcsDefaultBucket;
@@ -28,7 +28,9 @@ public class GcsJsonApiService {
      * Generate a cloud storage upload url under the default attachments folder.
      *
      * @param type   File MIME type.
+     * @param filename The file name to store the file as and ultimately download it as.
      * @param origin Upload origin. (The system that the file will be uploaded from).
+     *               If not supplied it will default to the configured host.
      * @return Upload url.
      */
     public String getUploadUrl(String type, String filename, String origin) {
@@ -42,14 +44,31 @@ public class GcsJsonApiService {
      * @param type   File MIME type.
      * @param filename The file name to store the file as and ultimately download it as.
      * @param origin Upload origin. (The system that the file will be uploaded from).
+     *               If not supplied it will default to the configured host.
      * @return Upload url.
      */
     public String getUploadUrl(String folder, String type, String filename, String origin) {
+        return getUploadUrl(gcsDefaultBucket, folder, type, filename, origin);
+    }
+
+    /**
+     * Generate a cloud storage upload url.
+     *
+     * @param bucket The bucket the attachment is in.
+     * @param folder Folder to store the attachment under.
+     * @param type   File MIME type.
+     * @param filename The file name to store the file as and ultimately download it as.
+     * @param origin Upload origin. (The system that the file will be uploaded from).
+     *               If not supplied it will default to the configured host.
+     * @return Upload url.
+     */
+    public String getUploadUrl(String bucket, String folder, String type, String filename, String origin) {
+        Validate.notBlank(bucket, "bucket required");
         Validate.notBlank(folder, "folder required");
         Validate.notBlank(filename, "filename required");
         String originHost = Strings.isNullOrEmpty(origin) ? host : origin;
         String base = buildBasePath(folder);
-        return cloudStorage.initiateResumableUpload(gcsDefaultBucket, base, filename, type, originHost);
+        return cloudStorage.initiateResumableUpload(bucket, base, filename, type, originHost);
 
     }
 
@@ -60,7 +79,18 @@ public class GcsJsonApiService {
      * @return Url
      */
     public String getDownloadUrl(String gcsObjectName) {
-        return cloudStorage.generateSignedUrl(gcsDefaultBucket, getFullPathFromObjectName(gcsObjectName), DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
+        return getDownloadUrl(gcsDefaultBucket, gcsObjectName);
+    }
+
+    /**
+     * Get a signed url to view an attachment. The url will last 24 hours. The file name portion of the id is url escaped internally.
+     *
+     * @param bucket The bucket the attachment is in.
+     * @param gcsObjectName The id of the attachment.
+     * @return Url
+     */
+    public String getDownloadUrl(String bucket, String gcsObjectName) {
+        return cloudStorage.generateSignedUrl(bucket, getFullPathFromObjectName(gcsObjectName), DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
     }
 
     /**
