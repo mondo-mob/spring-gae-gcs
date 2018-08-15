@@ -45,8 +45,8 @@ class PropertiesConfig {
         final PropertySourcesPlaceholderConfigurer pspc = new PropertySourcesPlaceholderConfigurer();
         Properties properties = new Properties();
 
-        properties.setProperty("gcs.devCredentialsFile", "/test_dev_credentials.json");
-        properties.setProperty("gcs.defaultBucket", "testBucket");
+        properties.setProperty("gcs.dev-credentials-file", "/test_dev_credentials.json");
+        properties.setProperty("gcs.default-bucket", "testBucket");
 
         pspc.setProperties(properties);
         return pspc;

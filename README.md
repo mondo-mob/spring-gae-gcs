@@ -18,13 +18,13 @@ Maven:
 <dependency>
   <groupId>com.threewks.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
-compile 'com.threewks.spring:spring-gae-gcs:1.0.0'
+compile 'com.threewks.spring:spring-gae-gcs:1.1.0'
 ```
 
 
@@ -49,11 +49,11 @@ Configuration
 The following **mandatory** configuration options must be set in your application.properties file:
 
 - `app.host` - a complete URL to the host (eg: `http://www.example.com`).
-- `gcs.defaultBucket` - The gcs bucket that should be used to upload the files (eg: `example.appspot.com`).
+- `gcs.default-bucket` - The gcs bucket that should be used to upload the files (eg: `example.appspot.com`).
 
 The following **optional** configuration options can be set in your application.properties file:
-- `gcs.attachmentFolder` - The folder that will be used to upload the files. If not provided, `attachments` will be used.
-- `gcs.devCredentialsFile` - The name of the file with the service account credentials for local dev (See below).
+- `gcs.attachment-folder` - The folder that will be used to upload the files. If not provided, `attachments` will be used.
+- `gcs.dev-credentials-file` - The name of the file with the service account credentials for local dev (See below).
 If not provided, `/dev-gcs-credentials.json` will be used.
 
 
