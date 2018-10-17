@@ -12,10 +12,12 @@ import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -75,6 +77,36 @@ public class SpringGaeGcsConfiguration {
                                                     @Value("#{'${gcs.attachment-folder:attachments}'}")
                                                               String gcsAttachmentFolder) {
         return new GcsJsonApiService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty("gcs.default-bucket")
+    @Profile({"gae"})
+    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName) {
+        if (StringUtils.isBlank(bucketName)) {
+            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
+        }
+
+        return new CloudStorageService(bucketName);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty("gcs.default-bucket")
+    @Profile({"!gae"})
+    public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName,
+            @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String gcsCredentials,
+            @Value("${app.id}") String projectId) {
+        if (StringUtils.isBlank(bucketName)) {
+            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
+        }
+
+        if (StringUtils.isBlank(projectId)) {
+            throw new IllegalArgumentException("${app.id} must have a value");
+        }
+
+        return new CloudStorageService(bucketName, gcsCredentials, projectId);
     }
 
     private GoogleCredential getLocalDevGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory, String devCredentialsFile) {

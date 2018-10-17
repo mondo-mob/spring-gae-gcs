@@ -1,3 +1,7 @@
+1.2.0-SNAPSHOT
+----------------------
+- Migrated CloudStorageService from `com.threewks.spring:spring-boot-gae` library to this library.
+
 1.0.0-alpha-6-SNAPSHOT
 ----------------------
 - Fix download url which was broken with Spring Boot 2 due to change with org.springframework.web.util.UriUtils

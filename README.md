@@ -18,7 +18,7 @@ Maven:
 <dependency>
   <groupId>com.threewks.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -42,6 +42,7 @@ To use the library, import the configuration `@Import(SpringGaeGcsConfiguration.
 This will create the following bean that you can inject:
 - `GcsJsonApiService`: It will provide methods to generate the upload and download URL.
 - `GcsJsonApiClient`: Lower level client for interacting with the JSON api. You will mostly use the Service above.
+- `CloudStorageService`: Service for dealing with files in GCS.
 
 Configuration
 -------------
