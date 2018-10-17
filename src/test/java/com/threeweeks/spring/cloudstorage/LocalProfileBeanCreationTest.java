@@ -47,6 +47,7 @@ class PropertiesConfig {
 
         properties.setProperty("gcs.dev-credentials-file", "/test_dev_credentials.json");
         properties.setProperty("gcs.default-bucket", "testBucket");
+        properties.setProperty("app.id", "some-app");
 
         pspc.setProperties(properties);
         return pspc;
