@@ -88,8 +88,13 @@ public class CloudStorageService {
     }
 
     public void copyFile(String bucketName, String fromObjectName, String toObjectName, boolean publicReadable) {
-        BlobId targetObject = blobId(bucketName, toObjectName);
-        storage.copy(Storage.CopyRequest.of(blobId(bucketName, fromObjectName), targetObject));
+        copyFile(bucketName, fromObjectName, bucketName, toObjectName, publicReadable);
+    }
+
+    public void copyFile(String fromBucketName, String fromObjectName, String toBucketName, String toObjectName, boolean publicReadable) {
+        BlobId sourceObject = blobId(fromBucketName, fromObjectName);
+        BlobId targetObject = blobId(toBucketName, toObjectName);
+        storage.copy(Storage.CopyRequest.of(sourceObject, targetObject));
 
         if (publicReadable) {
             makePublic(targetObject);

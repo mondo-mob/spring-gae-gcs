@@ -1,3 +1,7 @@
+1.2.1-SNAPSHOT
+----------------------
+- Included method to move gcs object from one bucket to another
+
 1.2.0-SNAPSHOT
 ----------------------
 - Migrated CloudStorageService from `com.threewks.spring:spring-boot-gae` library to this library.

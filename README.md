@@ -18,13 +18,13 @@ Maven:
 <dependency>
   <groupId>com.threewks.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
-  <version>1.2.0</version>
+  <version>1.2.1</version>
 </dependency>
 ```
 
 Gradle:
 ```groovy
-compile 'com.threewks.spring:spring-gae-gcs:1.1.0'
+compile 'com.threewks.spring:spring-gae-gcs:1.2.1'
 ```
 
 
