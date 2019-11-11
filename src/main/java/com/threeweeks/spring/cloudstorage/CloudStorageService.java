@@ -1,5 +1,7 @@
 package com.threeweeks.spring.cloudstorage;
 
+import com.google.api.client.util.Lists;
+import com.google.api.gax.paging.Page;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.ReadChannel;
@@ -99,6 +101,15 @@ public class CloudStorageService {
         if (publicReadable) {
             makePublic(targetObject);
         }
+    }
+
+    public List<Blob> listFiles(String basePath) {
+        return listFiles(defaultBucketName, basePath);
+    }
+
+    public List<Blob> listFiles(String bucketName, String basePath) {
+        Page<Blob> files = storage.list(bucketName, Storage.BlobListOption.prefix(basePath), Storage.BlobListOption.pageSize(100));
+        return Lists.newArrayList(files.getValues());
     }
 
     public void moveFile(String fromObjectName, String toObjectName, boolean publicReadable) {
