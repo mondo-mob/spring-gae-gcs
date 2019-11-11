@@ -164,7 +164,7 @@ Jcenter also has CDN among other improvements listed here: [Why should I use jce
 Privileged users will have system properties for `bintray.user` and `bintray.key` defined to do this.
 
 ```
-./gradle.w clean bintrayUpload --info
+./gradlew clean bintrayUpload --info
 ```
 The above command fails silently (as of version `1.8.0` of `gradle-bintray-plugin` so just make sure it didn't skip upload due to undefined key). 
 
