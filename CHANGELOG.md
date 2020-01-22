@@ -1,3 +1,6 @@
+## 1.4.0 (2020-01-22)
+- Convenience method for moving a file from a source `Blob`
+
 ## 1.3.0 (2019-11-11)
 - Adds ability to list files and bumps up internal dependency versions. There should be no breaking changes.
 

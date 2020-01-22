@@ -117,6 +117,11 @@ public class CloudStorageService {
         deleteFile(fromObjectName);
     }
 
+    public void moveFile(Blob file, String targetBucket, String targetName) {
+        file.copyTo(targetBucket, targetName);
+        file.delete();
+    }
+
     public boolean fileExists(String objectName) {
         return fileExists(defaultBucketName, objectName);
     }
