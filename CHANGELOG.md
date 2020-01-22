@@ -1,25 +1,18 @@
-1.2.1-SNAPSHOT
-----------------------
+## 1.3.0 (2019-11-11)
+- Adds ability to list files and bumps up internal dependency versions. There should be no breaking changes.
+
+## 1.2.1 (2019-05-21)
 - Included method to move gcs object from one bucket to another
 
-1.2.0-SNAPSHOT
-----------------------
+## 1.2.0 (2018-10-17)
 - Migrated CloudStorageService from `com.threewks.spring:spring-boot-gae` library to this library.
 
-1.0.0-alpha-6-SNAPSHOT
-----------------------
+## 1.0.0-alpha-6 (2018-07-03)
 - Fix download url which was broken with Spring Boot 2 due to change with org.springframework.web.util.UriUtils
 
-1.0.0-alpha-5-SNAPSHOT
-----------------------
+## 1.0.0-alpha-5 (2018-06-18)
 - Fix download url for files containing url-special characters
 
-1.0.0-alpha-4-SNAPSHOT
-----------------------
+## 1.0.0-alpha-4 (2018-05-18)
 - Updated guava to version 20
 - Refactored code
-
-1.0.0-alpha-4
---------------------------
-- File names is preserved exactly when uploaded to storage
-- Use Jackson instead of Gson 
