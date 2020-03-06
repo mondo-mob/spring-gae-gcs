@@ -1,3 +1,10 @@
+## 2.0.0 (2020-03-06)
+Custom expiry for signed URLs is now supplied as a `Duration` instead of an `int` and a new method in `GcsJsonApiClient` returns
+the `OffsetDateTime` of the expiration as well as the URL.
+
+**Breaking:** Call to `GcsJsonApliClient.generateSignedUrl()` last parameter changed from `Integer` representing minutes to `Duration`.
+Simple fix for existing calls is to replace last parameter with `Duration.ofMinutes(xxx)`.
+
 ## 1.4.0 (2020-01-22)
 - Convenience method for moving a file from a source `Blob`
 
