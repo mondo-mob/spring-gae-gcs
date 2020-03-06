@@ -1,15 +1,15 @@
 package com.threeweeks.spring.cloudstorage;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.extensions.appengine.auth.oauth2.AppIdentityCredential;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpRequestInitializer;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.auth.Credentials;
+import com.google.auth.http.HttpCredentialsAdapter;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
 import org.apache.commons.lang3.StringUtils;
@@ -18,9 +18,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnResource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,66 +37,57 @@ public class SpringGaeGcsConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringGaeGcsConfiguration.class);
 
 
+    @Value("${gcs.dev-credentials-file}")
+    private String propValue;
+
     @Bean
     @ConditionalOnMissingBean(HttpTransport.class)
     public HttpTransport getHttpTransport() {
+        System.out.println("AAAAAA propValue = " + propValue);
         LOGGER.info("HttpTransport bean not found. Default UrlFetchTransport.getDefaultInstance()");
         return UrlFetchTransport.getDefaultInstance();
     }
 
-    @Bean
-    @ConditionalOnMissingBean(JsonFactory.class)
-    public JsonFactory getJsonFactory() {
-        LOGGER.info("JSON factory bean not found, default new GsonFactory()");
-        return new JacksonFactory();
-    }
-
-    @Profile("gae")
-    @Bean
-    public GcsJsonApiClient getGaeGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory) {
-        LOGGER.info("Starting gcs configuration in GAE env.");
-        GoogleCredential googleCredential = getGaeGoogleCredential(httpTransport, jsonFactory);
-
-        return new GcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport),
-                getAppIdentityService(), googleCredential);
-    }
 
     @Profile("!gae")
     @Bean
-    public GcsJsonApiClient getLocalGcsClient(HttpTransport httpTransport, JsonFactory jsonFactory,
-                                              @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
-                                                      String devCredentialsFile) {
+    @Order(Ordered.LOWEST_PRECEDENCE - 1)
+    @ConditionalOnMissingBean
+    @ConditionalOnResource(resources = "classpath:${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
+    public GcsJsonApiClient getLocalGcsClient(HttpTransport httpTransport,
+            @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
+                    String devCredentialsFile) {
         LOGGER.info("Starting gcs configuration in Local env.");
-        GoogleCredential googleCredential = getLocalDevGoogleCredential(httpTransport, jsonFactory, devCredentialsFile);
+        ServiceAccountCredentials credentials = getCredentialsFromFile(devCredentialsFile);
 
-        return new LocalGcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport),
-                getAppIdentityService(), googleCredential);
+        return new LocalGcsJsonApiClient(getHttpRequestFactory(credentials, httpTransport), getAppIdentityService(), credentials);
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public GcsJsonApiClient getGaeGcsClient(HttpTransport httpTransport) {
+        LOGGER.info("Starting gcs configuration in GAE env.");
+        GoogleCredentials googleCredential = getGaeGoogleCredential();
+
+        return new GcsJsonApiClient(getHttpRequestFactory(googleCredential, httpTransport), getAppIdentityService());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public GcsJsonApiService getCloudStorageService(GcsJsonApiClient cloudStorage,
-                                                    @Value("${gcs.default-bucket}") String gcsDefaultBucket,
-                                                    @Value("${app.host}") String host,
-                                                    @Value("#{'${gcs.attachment-folder:attachments}'}")
-                                                              String gcsAttachmentFolder) {
+            @Value("${gcs.default-bucket}") String gcsDefaultBucket,
+            @Value("${app.host}") String host,
+            @Value("#{'${gcs.attachment-folder:attachments}'}")
+                    String gcsAttachmentFolder) {
         return new GcsJsonApiService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnProperty("gcs.default-bucket")
-    @Profile({"gae"})
-    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName) {
-        if (StringUtils.isBlank(bucketName)) {
-            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
-        }
-
-        return new CloudStorageService(bucketName);
-    }
 
     @Bean
+    @Order(Ordered.LOWEST_PRECEDENCE - 1)
     @ConditionalOnMissingBean
     @ConditionalOnProperty("gcs.default-bucket")
+    @ConditionalOnResource(resources = "classpath:${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
     @Profile({"!gae"})
     public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName,
             @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String gcsCredentials,
@@ -109,12 +103,20 @@ public class SpringGaeGcsConfiguration {
         return new CloudStorageService(bucketName, gcsCredentials, projectId);
     }
 
-    private GoogleCredential getLocalDevGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory, String devCredentialsFile) {
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty("gcs.default-bucket")
+    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName) {
+        if (StringUtils.isBlank(bucketName)) {
+            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
+        }
 
+        return new CloudStorageService(bucketName);
+    }
+
+    private ServiceAccountCredentials getCredentialsFromFile(@Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String devCredentialsFile) {
         try (InputStream jsonCredentials = getClass().getResourceAsStream(devCredentialsFile)) {
-            return GoogleCredential
-                    .fromStream(jsonCredentials, httpTransport, jsonFactory)
-                    .createScoped(STORAGE_SCOPES);
+            return ServiceAccountCredentials.fromStream(jsonCredentials);
         } catch (IOException e) {
             String msg = String.format("Cloud storage client configuration failed. Ensure you have a local credentials file created in src/main/resources/%s." +
                             "See https://developers.google.com/identity/protocols/application-default-credentials. Alternatively you can remove " +
@@ -124,9 +126,10 @@ public class SpringGaeGcsConfiguration {
         }
     }
 
-    private GoogleCredential getGaeGoogleCredential(HttpTransport httpTransport, JsonFactory jsonFactory) {
+
+    private GoogleCredentials getGaeGoogleCredential() {
         try {
-            return new AppIdentityCredential.AppEngineCredentialWrapper(httpTransport, jsonFactory)
+            return ServiceAccountCredentials.getApplicationDefault()
                     .createScoped(STORAGE_SCOPES);
         } catch (IOException e) {
             throw new RuntimeException(String.format("Cloud storage client configuration failed: %s", e.getMessage()), e);
@@ -137,8 +140,8 @@ public class SpringGaeGcsConfiguration {
         return AppIdentityServiceFactory.getAppIdentityService();
     }
 
-    private HttpRequestFactory getHttpRequestFactory(GoogleCredential googleCredential, HttpTransport httpTransport) {
-        HttpRequestInitializer requestInitializer = googleCredential;
+    private HttpRequestFactory getHttpRequestFactory(Credentials credentials, HttpTransport httpTransport) {
+        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(credentials);
         return httpTransport.createRequestFactory(requestInitializer);
     }
 

@@ -1,20 +1,24 @@
 package com.threeweeks.spring.cloudstorage.apiclient;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.auth.oauth2.ServiceAccountCredentials;
 
 import java.security.Signature;
 
 public class LocalGcsJsonApiClient extends GcsJsonApiClient {
 
-    public LocalGcsJsonApiClient(HttpRequestFactory httpRequestFactory, AppIdentityService appIdentityService, GoogleCredential gcsCredential) {
-        super(httpRequestFactory, appIdentityService, gcsCredential);
+    private final ServiceAccountCredentials credentials;
+
+    public LocalGcsJsonApiClient(HttpRequestFactory httpRequestFactory, AppIdentityService appIdentityService, ServiceAccountCredentials credentials) {
+        super(httpRequestFactory, appIdentityService);
+        this.credentials = credentials;
+
     }
 
     @Override
     protected String getGoogleAccessId() {
-        return gcsCredential.getServiceAccountId();
+        return credentials.getServiceAccountUser();
     }
 
     @Override
@@ -22,7 +26,7 @@ public class LocalGcsJsonApiClient extends GcsJsonApiClient {
         byte[] signature;
         try {
             Signature rsa = Signature.getInstance("SHA256withRSA");
-            rsa.initSign(gcsCredential.getServiceAccountPrivateKey());
+            rsa.initSign(credentials.getPrivateKey());
             rsa.update(data);
             signature = rsa.sign();
         } catch (Exception e) {

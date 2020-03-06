@@ -2,8 +2,6 @@ package com.threeweeks.spring.cloudstorage;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
 import org.junit.Test;
@@ -32,9 +30,6 @@ public class AppEngineBeanCreationTest {
     private GcsJsonApiService apiService;
 
     @Autowired
-    private JsonFactory jsonFactory;
-
-    @Autowired
     private HttpTransport httpTransport;
 
     @Test
@@ -53,9 +48,5 @@ public class AppEngineBeanCreationTest {
         assertTrue(httpTransport instanceof UrlFetchTransport);
     }
 
-    @Test
-    public void jsonFactoryShouldDefaultToGSON() {
-        assertTrue(jsonFactory instanceof JacksonFactory);
-    }
 
 }

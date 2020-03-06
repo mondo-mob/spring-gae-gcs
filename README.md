@@ -76,7 +76,6 @@ Dependencies
 The library requires two dependencies. If they are not provided, default ones for AppEngine will be used:
 
 - `com.google.api.client.http.HttpTransport` If not provided, will use: `com.google.api.client.extensions.appengine.http.UrlFetchTransport`
-- `com.google.api.client.json.JsonFactory` If not provided, it will use: `com.google.api.client.json.jackson2.JacksonFactory`
 
 
 Usage

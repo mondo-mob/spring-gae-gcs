@@ -30,7 +30,7 @@ public class GcsJsonApiClientTest {
 
     @Before
     public void before() {
-        gcsJsonApiClient = spy(new GcsJsonApiClient(null, identityService, null));
+        gcsJsonApiClient = spy(new GcsJsonApiClient(null, identityService));
     }
 
     @Test

@@ -1,12 +1,12 @@
 package com.threeweeks.spring.cloudstorage.apiclient;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.common.net.UrlEscapers;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.geronimo.mail.util.Base64;
 
 import java.io.IOException;
@@ -30,14 +30,10 @@ public class GcsJsonApiClient {
 
     protected final HttpRequestFactory httpRequestFactory;
     protected final AppIdentityService appIdentityService;
-    protected final GoogleCredential gcsCredential;
 
-    public GcsJsonApiClient(HttpRequestFactory httpRequestFactory,
-            AppIdentityService appIdentityService,
-            GoogleCredential gcsCredential) {
+    public GcsJsonApiClient(HttpRequestFactory httpRequestFactory, AppIdentityService appIdentityService) {
         this.httpRequestFactory = httpRequestFactory;
         this.appIdentityService = appIdentityService;
-        this.gcsCredential = gcsCredential;
     }
 
     /**
@@ -143,7 +139,7 @@ public class GcsJsonApiClient {
     }
 
     OffsetDateTime getExpiryDateTime(Duration expiryDuration) {
-        return OffsetDateTime.now().plus(expiryDuration);
+        return OffsetDateTime.now().plus(ObjectUtils.defaultIfNull(expiryDuration, DEFAULT_EXPIRY_DURATION));
     }
 
     private String signRequest(String canonicalizedResource, long expiration) {
