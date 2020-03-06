@@ -1,4 +1,4 @@
-## 2.0.0 (2020-03-06)
+## 3.0.0 (2020-03-06)
 - Local instances can use the local user's gcloud credentials to connect to a server, so locally we don't need to enforce using JSON credentials. The config for json credentials will only attempt to do so if the credentials file exists, otherwise falling back to using appengine default service credentials
 - Improved bean tests to get them workin again
 - Bumped internal lib versions
