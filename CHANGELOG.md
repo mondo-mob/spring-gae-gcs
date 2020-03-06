@@ -1,4 +1,10 @@
 ## 2.0.0 (2020-03-06)
+- Local instances can use the local user's gcloud credentials to connect to a server, so locally we don't need to enforce using JSON credentials. The config for json credentials will only attempt to do so if the credentials file exists, otherwise falling back to using appengine default service credentials
+- Improved bean tests to get them workin again
+- Bumped internal lib versions
+- **BREAKING:** Signature of constructors has changed. If existing projects did not manually construct objects there should be no impact with any luck.
+
+## 2.0.0 (2020-03-06)
 Custom expiry for signed URLs is now supplied as a `Duration` instead of an `int` and a new method in `GcsJsonApiClient` returns
 the `OffsetDateTime` of the expiration as well as the URL.
 
