@@ -6,10 +6,12 @@ import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.Validate;
 
+import java.time.Duration;
 import java.util.UUID;
 
 public class GcsJsonApiService {
-    public static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 5;
+    private static final int DEFAULT_LINK_EXPIRY_DURATION_MINUTES = 5;
+    static final Duration DEFAULT_EXPIRY_DURATION = Duration.ofMinutes(DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
 
     private final GcsJsonApiClient cloudStorage;
     private final String gcsDefaultBucket;
@@ -83,14 +85,14 @@ public class GcsJsonApiService {
     }
 
     /**
-     * Get a signed url to view an attachment. The url will last 24 hours. The file name portion of the id is url escaped internally.
+     * Get a signed url to view an attachment. The url will last {@value DEFAULT_LINK_EXPIRY_DURATION_MINUTES} minutes. The file name portion of the id is url escaped internally.
      *
      * @param bucket The bucket the attachment is in.
      * @param gcsObjectName The id of the attachment.
      * @return Url
      */
     public String getDownloadUrl(String bucket, String gcsObjectName) {
-        return cloudStorage.generateSignedUrl(bucket, getFullPathFromObjectName(gcsObjectName), DEFAULT_LINK_EXPIRY_DURATION_MINUTES);
+        return cloudStorage.generateSignedUrl(bucket, getFullPathFromObjectName(gcsObjectName), DEFAULT_EXPIRY_DURATION);
     }
 
     /**

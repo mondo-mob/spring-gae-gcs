@@ -9,6 +9,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import static com.threeweeks.spring.cloudstorage.GcsJsonApiService.DEFAULT_EXPIRY_DURATION;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
@@ -78,7 +79,7 @@ public class GcsJsonApiServiceTest {
     @Test
     public void getDownloadUrl() {
         String expectedDownloadUrl = "https://download";
-        when(cloudStorage.generateSignedUrl(DEFAULT_BUCKET, "attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My%20report.pdf", GcsJsonApiService.DEFAULT_LINK_EXPIRY_DURATION_MINUTES))
+        when(cloudStorage.generateSignedUrl(DEFAULT_BUCKET, "attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My%20report.pdf", DEFAULT_EXPIRY_DURATION))
                 .thenReturn(expectedDownloadUrl);
 
         String downloadUrl = service.getDownloadUrl("attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My report.pdf");
@@ -89,7 +90,7 @@ public class GcsJsonApiServiceTest {
     @Test
     public void getDownloadUrl_willUseSuppliedBucket() {
         String expectedDownloadUrl = "https://download";
-        when(cloudStorage.generateSignedUrl("custom-bucket", "attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My%20report.pdf", GcsJsonApiService.DEFAULT_LINK_EXPIRY_DURATION_MINUTES))
+        when(cloudStorage.generateSignedUrl("custom-bucket", "attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My%20report.pdf", DEFAULT_EXPIRY_DURATION))
                 .thenReturn(expectedDownloadUrl);
 
         String downloadUrl = service.getDownloadUrl("custom-bucket", "attachments/7ca3794f-ca91-473a-b4b0-07f17e5f8c74/My report.pdf");

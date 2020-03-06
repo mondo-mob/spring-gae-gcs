@@ -3,6 +3,7 @@ package com.threeweeks.spring.cloudstorage;
 
 import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.Properties;
 
 import static junit.framework.TestCase.assertTrue;
 
+@Ignore("Not working without having a sample dev credentials file")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PropertiesConfig.class, SpringGaeGcsConfiguration.class})
 @ActiveProfiles(profiles = "local")

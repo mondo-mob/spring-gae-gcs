@@ -10,8 +10,8 @@ import com.google.common.net.UrlEscapers;
 import org.apache.geronimo.mail.util.Base64;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 
 
 /**
@@ -25,7 +25,8 @@ public class GcsJsonApiClient {
     private static final String BASE_GOOGLE_API_URL = "https://www.googleapis.com";
     private static final String BASE_GOOGLE_STORAGE_URL = "https://storage.googleapis.com";
     private static final String HTTP_METHOD = "GET";
-    private static final int TEN_MINUTES = 10;
+    private static final int DEAFULT_EXPIRY_DURATION_MINUTES = 10;
+    static final Duration DEFAULT_EXPIRY_DURATION = Duration.ofMinutes(DEAFULT_EXPIRY_DURATION_MINUTES);
 
     protected final HttpRequestFactory httpRequestFactory;
     protected final AppIdentityService appIdentityService;
@@ -99,35 +100,50 @@ public class GcsJsonApiClient {
 
     /**
      * Generate a signed URL which can be used to access a resource without a Google account. Links
-     * expire after a set time period (default 10 minutes).
+     * expire after a set time period (default {@value DEAFULT_EXPIRY_DURATION_MINUTES} minutes).
      *
      * @param bucket             the bucket where the resource is stored
      * @param name               the resource name
-     * @param minutesTillExpires the number of minutes from now till link expires. Defaults to 10
+     * @param expiryDuration     the duration until the link expires
      * @return a signed URL for accessing a resource
+     */
+    public String generateSignedUrl(String bucket, String name, Duration expiryDuration) {
+        return generateSignedUrlWithExpiry(bucket, name, expiryDuration).getUrl();
+    }
+
+    /**
+     * Generate a signed URL which can be used to access a resource without a Google account. Links
+     * expire after a set time period (default {@value DEAFULT_EXPIRY_DURATION_MINUTES} minutes).
+     *
+     * @param bucket             the bucket where the resource is stored
+     * @param name               the resource name
+     * @param expiryDuration     the duration until the link expires
+     * @return an object containing the signed url and the expiration date time
      * @see <a href="https://cloud.google.com/storage/docs/access-control/signed-urls#signing-gae">Signed URLs</a>
      */
-    public String generateSignedUrl(String bucket, String name, Integer minutesTillExpires) {
+    public SignedUrl generateSignedUrlWithExpiry(String bucket, String name, Duration expiryDuration) {
         String canonicalizedResource = String.format("/%s/%s", bucket, name);
-        long expires = getExpiration(minutesTillExpires);
+        OffsetDateTime expiryDateTime = getExpiryDateTime(expiryDuration);
+        long expires = expiryDateTime.toEpochSecond();
         String signature = signRequest(canonicalizedResource, expires);
         String googleAccessId = getGoogleAccessId();
 
         String queryString = String.format("?GoogleAccessId=%s&Expires=%s&Signature=%s", UrlEscapers.urlFormParameterEscaper().escape(googleAccessId), expires, UrlEscapers.urlFormParameterEscaper().escape(signature));
 
-        return String.format("%s%s%s",
+        String url = String.format("%s%s%s",
                 BASE_GOOGLE_STORAGE_URL,
                 canonicalizedResource,
                 queryString);
+
+        return new SignedUrl(url, expiryDateTime);
     }
 
     protected String getGoogleAccessId() {
         return appIdentityService.getServiceAccountName();
     }
 
-    long getExpiration(Integer minutesTillExpires) {
-        minutesTillExpires = minutesTillExpires == null ? TEN_MINUTES : minutesTillExpires;
-        return LocalDateTime.now().plusMinutes(minutesTillExpires).toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
+    OffsetDateTime getExpiryDateTime(Duration expiryDuration) {
+        return OffsetDateTime.now().plus(expiryDuration);
     }
 
     private String signRequest(String canonicalizedResource, long expiration) {
