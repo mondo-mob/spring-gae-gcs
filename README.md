@@ -32,39 +32,38 @@ compile 'com.threewks.spring:spring-gae-gcs:VERSION-HERE'
 Setup
 -----
 
-To use the library, import the configuration `@Import(SpringGaeGcsConfiguration.class)` on any config file:
+This library automatically configures some beans based on configuration that you supply. Simply including the dependency and configuring properties
+will be enough to get you going.
 
-    ...
-    @SpringBootApplication
-    @Import(SpringGaeGcsConfiguration.class)
-    public class Application {
-    ...
-
-This will create the following bean that you can inject:
-- `GcsJsonApiService`: It will provide methods to generate the upload and download URL.
-- `GcsJsonApiClient`: Lower level client for interacting with the JSON api. You will mostly use the Service above.
-- `CloudStorageService`: Service for dealing with files in GCS.
+This will create the following bean that you can inject. All beans are only created if one does not already exist of the same type:
+- `GcsJsonApiClient`: Lower level client for interacting with the JSON api. This does not 
+  require any properties to be set for the bean to be created.
+- `GcsJsonApiService`: Provides methods to generate upload and download URLs with a simpler interface to the raw client. This requires `app.host` and 
+   `gcs.default-bucket` properties before the bean is created.
+- `CloudStorageService`: Service for dealing with files in GCS. This requires `gcs.default-bucket` before the bean is created.
 
 Configuration
 -------------
 
-The following **mandatory** configuration options must be set in your application.properties file:
-
+The configuration properties used are described below:
 - `app.host` - a complete URL to the host (eg: `http://www.example.com`).
 - `gcs.default-bucket` - The gcs bucket that should be used to upload the files (eg: `example.appspot.com`).
-
-The following **optional** configuration options can be set in your application.properties file:
-- `gcs.attachment-folder` - The folder that will be used to upload the files. If not provided, `attachments` will be used.
-- `gcs.dev-credentials-file` - The name of the file with the service account credentials for local dev (See below).
-If not provided, `/dev-gcs-credentials.json` will be used.
+- `gcs.attachment-folder` - The folder that will be used to upload the files in API. If not provided, `attachments` will be used.
+- `gcs.dev-credentials-file` - The name of the file with the service account credentials for local dev (See below). 
+   If not provided, `/dev-gcs-credentials.json` will be the file that the library attempts to look for this file in.
 
 
 Local development
 ------------------
-To be able to upload files from your local environment, you need to generate a JSON key from the default service account of the AppEngine project.
-The key should be stored in the resources folder with the name: `dev-gcs-credentials.json`
+To be able to upload files from your local environment you should have [Google Cloud Tools SDK](https://cloud.google.com/sdk/install) installed and ideally
+be authenticated with a user that has read/write access to a storage bucket in a GCP project. The local application will automatically use the credentials
+of the local user to interact with the bucket.
 
-To obtain the JSON key follow this [guide](https://cloud.google.com/iam/docs/creating-managing-service-account-keys)
+If you prefer to have explicit JSON credentials for the local application to use then you need to generate a JSON key from the default service account of the AppEngine project.
+The key should be stored in the resources folder with the name: `dev-gcs-credentials.json`. To obtain the JSON key follow this [guide](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
+
+The auto configuration will search for a local credentials file and if it does not find one it will configure with the assumption that the local credentials
+are setup in the SDK as per the first option described above.
 
 Spring profiles
 -----------------
