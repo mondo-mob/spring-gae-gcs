@@ -1,3 +1,7 @@
+## 3.0.3 (2020-03-09)
+- Local GCS config needs to return client email from service account credentials for signing urls
+- Local development without JSON key file is not recommended for now
+
 ## 3.0.2 (2020-03-09)
 - Another config fix for default bucket
 

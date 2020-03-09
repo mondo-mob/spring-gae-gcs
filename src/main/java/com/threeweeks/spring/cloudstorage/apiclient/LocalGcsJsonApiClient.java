@@ -18,7 +18,7 @@ public class LocalGcsJsonApiClient extends GcsJsonApiClient {
 
     @Override
     protected String getGoogleAccessId() {
-        return credentials.getServiceAccountUser();
+        return credentials.getClientEmail();
     }
 
     @Override

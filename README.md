@@ -55,13 +55,14 @@ The configuration properties used are described below:
 
 Local development
 ------------------
-To be able to upload files from your local environment you should have [Google Cloud Tools SDK](https://cloud.google.com/sdk/install) installed and ideally
+**BETA:** To be able to upload files from your local environment you should have [Google Cloud Tools SDK](https://cloud.google.com/sdk/install) installed and ideally
 be authenticated with a user that has read/write access to a storage bucket in a GCP project. The local application will automatically use the credentials
 of the local user to interact with the bucket.
 
 If you prefer to have explicit JSON credentials for the local application to use then you need to generate a JSON key from the default service account of the AppEngine project.
 The key should be stored in the resources folder with the name: `dev-gcs-credentials.json`. To obtain the JSON key follow this [guide](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
 
+_For now you should use the JSON key method as the other method can have issues with signing URLs and is experimental._
 The auto configuration will search for a local credentials file and if it does not find one it will configure with the assumption that the local credentials
 are setup in the SDK as per the first option described above.
 
