@@ -1,4 +1,8 @@
+## 3.0.2 (2020-03-09)
+- Another config fix for default bucket
+
 ## 3.0.1 (2020-03-09)
+- **Skip this version and go to** `3.0.2`
 - Extending on from `3.0.0` with configuration fixes
 - "zero config". Auto configure according to properties where bean definitions don't already exist. No more need for redundant `@Configuration` classes.
 

@@ -88,7 +88,7 @@ public class SpringGaeGcsAutoConfiguration {
     @ConditionalOnProperty("gcs.default-bucket")
     @ConditionalOnResource(resources = "classpath:${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
     @Profile({"!gae"})
-    public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket") String defaultBucket,
+    public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket}") String defaultBucket,
             @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String gcsCredentials,
             @Value("${app.id}") String projectId) {
         Assert.isTrue(StringUtils.isNotBlank(projectId), "${app.id} must have a value");
@@ -99,7 +99,7 @@ public class SpringGaeGcsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty("gcs.default-bucket")
-    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket") String defaultBucket) {
+    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket}") String defaultBucket) {
         return new CloudStorageService(defaultBucket);
     }
 
