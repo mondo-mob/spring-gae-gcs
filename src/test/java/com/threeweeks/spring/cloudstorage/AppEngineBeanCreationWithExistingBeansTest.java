@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {ExistingBeansConfig.class, SpringGaeGcsConfiguration.class})
+@SpringBootTest(classes = {ExistingBeansConfig.class, SpringGaeGcsAutoConfiguration.class})
 @ActiveProfiles(profiles = "gae")
 public class AppEngineBeanCreationWithExistingBeansTest {
 

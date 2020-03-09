@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @TestPropertySource("classpath:application.properties")
-@SpringBootTest(classes = SpringGaeGcsConfiguration.class)
+@SpringBootTest(classes = SpringGaeGcsAutoConfiguration.class)
 @ActiveProfiles(profiles = "gae")
 public class AppEngineBeanCreationTest {
 

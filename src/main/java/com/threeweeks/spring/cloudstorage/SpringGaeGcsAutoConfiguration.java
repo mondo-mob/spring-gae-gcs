@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,18 +33,13 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 
 @Configuration
-public class SpringGaeGcsConfiguration {
+public class SpringGaeGcsAutoConfiguration {
     private static final List<String> STORAGE_SCOPES = singletonList("https://www.googleapis.com/auth/devstorage.full_control");
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpringGaeGcsConfiguration.class);
-
-
-    @Value("${gcs.dev-credentials-file}")
-    private String propValue;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpringGaeGcsAutoConfiguration.class);
 
     @Bean
     @ConditionalOnMissingBean(HttpTransport.class)
     public HttpTransport getHttpTransport() {
-        System.out.println("AAAAAA propValue = " + propValue);
         LOGGER.info("HttpTransport bean not found. Default UrlFetchTransport.getDefaultInstance()");
         return UrlFetchTransport.getDefaultInstance();
     }
@@ -73,13 +69,16 @@ public class SpringGaeGcsConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty("gcs.default-bucket")
     @ConditionalOnMissingBean
-    public GcsJsonApiService getCloudStorageService(GcsJsonApiClient cloudStorage,
-            @Value("${gcs.default-bucket}") String gcsDefaultBucket,
+    public GcsJsonApiService gcsJsonApiService(GcsJsonApiClient cloudStorage,
+            @Value("${gcs.default-bucket}") String defaultBucket,
             @Value("${app.host}") String host,
             @Value("#{'${gcs.attachment-folder:attachments}'}")
                     String gcsAttachmentFolder) {
-        return new GcsJsonApiService(cloudStorage, gcsDefaultBucket, host, gcsAttachmentFolder);
+        Assert.isTrue(StringUtils.isNotBlank(host), "${app.host} must have a value");
+
+        return new GcsJsonApiService(cloudStorage, defaultBucket, host, gcsAttachmentFolder);
     }
 
 
@@ -89,29 +88,19 @@ public class SpringGaeGcsConfiguration {
     @ConditionalOnProperty("gcs.default-bucket")
     @ConditionalOnResource(resources = "classpath:${gcs.dev-credentials-file:/dev-gcs-credentials.json}")
     @Profile({"!gae"})
-    public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName,
+    public CloudStorageService localCloudStorageService(@Value("${gcs.default-bucket") String defaultBucket,
             @Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String gcsCredentials,
             @Value("${app.id}") String projectId) {
-        if (StringUtils.isBlank(bucketName)) {
-            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
-        }
+        Assert.isTrue(StringUtils.isNotBlank(projectId), "${app.id} must have a value");
 
-        if (StringUtils.isBlank(projectId)) {
-            throw new IllegalArgumentException("${app.id} must have a value");
-        }
-
-        return new CloudStorageService(bucketName, gcsCredentials, projectId);
+        return new CloudStorageService(defaultBucket, gcsCredentials, projectId);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty("gcs.default-bucket")
-    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket:#{null}}") String bucketName) {
-        if (StringUtils.isBlank(bucketName)) {
-            throw new IllegalArgumentException("${gcs.default-bucket} must have a value");
-        }
-
-        return new CloudStorageService(bucketName);
+    public CloudStorageService cloudStorageService(@Value("${gcs.default-bucket") String defaultBucket) {
+        return new CloudStorageService(defaultBucket);
     }
 
     private ServiceAccountCredentials getCredentialsFromFile(@Value("${gcs.dev-credentials-file:/dev-gcs-credentials.json}") String devCredentialsFile) {

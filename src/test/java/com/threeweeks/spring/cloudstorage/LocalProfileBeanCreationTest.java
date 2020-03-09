@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static junit.framework.TestCase.assertFalse;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringGaeGcsConfiguration.class}, properties = {
+@SpringBootTest(classes = {SpringGaeGcsAutoConfiguration.class}, properties = {
         "gcs.default-bucket=test-bucket",
         "app.id=some-app"
 })

@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringGaeGcsConfiguration.class}, properties = {
+@SpringBootTest(classes = {SpringGaeGcsAutoConfiguration.class}, properties = {
         "gcs.dev-credentials-file=/test_dev_credentials.json",
         "gcs.default-bucket=test-bucket",
         "app.id=some-app"

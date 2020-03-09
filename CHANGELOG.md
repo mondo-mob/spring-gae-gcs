@@ -1,4 +1,9 @@
+## 3.0.1 (2020-03-09)
+- Extending on from `3.0.0` with configuration fixes
+- "zero config". Auto configure according to properties where bean definitions don't already exist. No more need for redundant `@Configuration` classes.
+
 ## 3.0.0 (2020-03-06)
+- **Do not use**: There were issues with this release, resolved in `3.0.1`
 - Local instances can use the local user's gcloud credentials to connect to a server, so locally we don't need to enforce using JSON credentials. The config for json credentials will only attempt to do so if the credentials file exists, otherwise falling back to using appengine default service credentials
 - Improved bean tests to get them workin again
 - Bumped internal lib versions
