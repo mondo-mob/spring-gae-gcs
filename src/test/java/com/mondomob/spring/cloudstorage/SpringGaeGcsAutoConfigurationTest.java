@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 import org.junit.Before;
 import org.junit.Test;

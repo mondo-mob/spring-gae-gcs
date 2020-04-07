@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage.apiclient;
+package com.mondomob.spring.cloudstorage.apiclient;
 
 import java.time.OffsetDateTime;
 

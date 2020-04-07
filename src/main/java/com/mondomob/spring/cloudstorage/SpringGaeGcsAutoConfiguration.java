@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.HttpRequestFactory;
@@ -10,8 +10,8 @@ import com.google.auth.Credentials;
 import com.google.auth.http.HttpCredentialsAdapter;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
-import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.GcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

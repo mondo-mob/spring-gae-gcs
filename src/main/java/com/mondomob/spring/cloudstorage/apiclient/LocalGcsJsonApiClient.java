@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage.apiclient;
+package com.mondomob.spring.cloudstorage.apiclient;
 
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.appengine.api.appidentity.AppIdentityService;

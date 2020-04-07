@@ -1,9 +1,9 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.HttpTransport;
-import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
-import com.threeweeks.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.GcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.LocalGcsJsonApiClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

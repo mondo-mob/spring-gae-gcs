@@ -17,7 +17,7 @@ Install
 Maven: 
 ```xml
 <dependency>
-  <groupId>com.threewks.spring</groupId>
+  <groupId>com.mondomob.spring</groupId>
   <artifactId>spring-gae-gcs</artifactId>
   <version>VERSION-HERE</version>
 </dependency>
@@ -25,7 +25,7 @@ Maven:
 
 Gradle:
 ```groovy
-compile 'com.threewks.spring:spring-gae-gcs:VERSION-HERE'
+compile 'com.mondomob.spring:spring-gae-gcs:VERSION-HERE'
 ```
 
 

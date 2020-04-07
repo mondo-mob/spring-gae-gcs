@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 import com.google.api.client.util.Lists;
 import com.google.api.gax.paging.Page;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Migrated from the com.threewks.spring:spring-boot-gae library.
+ * Migrated from the com.mondomob.spring:spring-boot-gae library.
  */
 public class CloudStorageService {
 

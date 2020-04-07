@@ -1,8 +1,8 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 import com.google.api.client.util.Strings;
 import com.google.common.net.UrlEscapers;
-import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.Validate;
 

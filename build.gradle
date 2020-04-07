@@ -11,7 +11,7 @@ plugins {
 }
 
 description 'Spring gae CloudStorage Integration'
-group 'com.threewks.spring'
+group 'com.mondomob.spring'
 
 
 apply plugin: 'java'
@@ -62,9 +62,9 @@ dependencies {
 
 def pomConfig = {
     scm {
-        connection 'https://github.com/3wks/spring-gae-gcs.git'
-        developerConnection 'https://github.com/3wks/spring-gae-gcs.git'
-        url 'https://github.com/3wks/spring-gae-gcs.git'
+        connection 'https://github.com/mondo-mob/spring-gae-gcs.git'
+        developerConnection 'https://github.com/mondo-mob/spring-gae-gcs.git'
+        url 'https://github.com/mondo-mob/spring-gae-gcs.git'
     }
 
     licenses {
@@ -72,19 +72,6 @@ def pomConfig = {
             name 'The MIT License (MIT)'
             url 'http://opensource.org/licenses/MIT'
             distribution 'repo'
-        }
-    }
-
-    developers {
-        developer {
-            id 'afcastano'
-            name 'Andres Castano'
-            email 'andres@3wks.com.au'
-        }
-        developer {
-            id 'mbyrne00'
-            name 'Matt Byrne'
-            email 'matt@3wks.com.au'
         }
     }
 }
@@ -125,7 +112,7 @@ publishing {
                 def root = asNode()
                 root.appendNode('name', project.name)
                 root.appendNode('description', project.description)
-                root.appendNode('url', 'https://github.com/3wks/spring-gae-gcs')
+                root.appendNode('url', 'https://github.com/mondo-mob/spring-gae-gcs')
                 root.appendNode('packaging', 'jar')
                 root.children().last() + pomConfig
             }
@@ -144,10 +131,10 @@ bintray {
         name = project.name
         desc = project.description
         repo = 'spring-google-appengine'
-        userOrg = '3wks'
+        userOrg = 'Mondo Mob'
         licenses = ['MIT']
         labels = ['spring', 'spring-boot', 'google', 'appengine', 'gae', 'gcp', 'cloudstorage']
-        vcsUrl = 'https://github.com/3wks/spring-gae-gcs.git'
+        vcsUrl = 'https://github.com/mondo-mob/spring-gae-gcs.git'
         version {
             name = project.version
             desc = "${project.name} ${project.version}"

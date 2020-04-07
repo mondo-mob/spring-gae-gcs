@@ -1,4 +1,4 @@
-package com.threeweeks.spring.cloudstorage.apiclient;
+package com.mondomob.spring.cloudstorage.apiclient;
 
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpHeaders;

@@ -1,7 +1,7 @@
-package com.threeweeks.spring.cloudstorage;
+package com.mondomob.spring.cloudstorage;
 
 
-import com.threeweeks.spring.cloudstorage.apiclient.GcsJsonApiClient;
+import com.mondomob.spring.cloudstorage.apiclient.GcsJsonApiClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +9,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static com.threeweeks.spring.cloudstorage.GcsJsonApiService.DEFAULT_EXPIRY_DURATION;
+import static com.mondomob.spring.cloudstorage.GcsJsonApiService.DEFAULT_EXPIRY_DURATION;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;

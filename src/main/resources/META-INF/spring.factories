@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.threeweeks.spring.cloudstorage.SpringGaeGcsAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.mondomob.spring.cloudstorage.SpringGaeGcsAutoConfiguration
